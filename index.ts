@@ -206,3 +206,25 @@ class LineExtendedBall {
         this.curr.startUpdating(cb)
     }
 }
+
+class Renderer {
+
+    leb : LineExtendedBall = new LineExtendedBall()
+    animator : Animator = new Animator()
+
+    render(context : CanvasRenderingContext2D) {
+        this.leb.draw(context)
+    }
+
+    handleTap(cb : Function) {
+        this.leb.startUpdating(() => {
+            this.animator.start(() => {
+                cb()
+                this.leb.startUpdating(() => {
+                    this.animator.stop()
+                    cb()
+                })
+            })
+        })
+    }
+}
