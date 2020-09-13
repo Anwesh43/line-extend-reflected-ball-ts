@@ -1,5 +1,3 @@
-import { timeStamp } from "console"
-
 const colors : Array<string> = [
     "#F44336",
     "#3F51B5",
@@ -8,7 +6,7 @@ const colors : Array<string> = [
     "#FFC107"
 ]
 const parts : number = 3 
-const scGap : number = 0.02 
+const scGap : number = 0.02 / parts  
 const strokeFactor : number = 90 
 const sizeFactor : number = 13.2 
 const delay : number = 20 
@@ -52,8 +50,9 @@ class DrawingUtil {
         const sc3 : number = ScaleUtil.divideScale(scale, 2, parts)
         const sf2 : number = ScaleUtil.sinify(sc2)        
         const r : number = Math.min(w, h) / sizeFactor 
+        console.log("scale1,2,3, ", sc1, sc2, sc3)
         context.save()
-        DrawingUtil.drawCircle(context, r + (w - 2 * r) * sc2, r + (h / 2 - r) * sf2, r * (sc1 - sc3))
+        DrawingUtil.drawCircle(context, r + (w - 2 * r) * sc2, r + (h / 2 - 2 * r) * sf2, r * (sc1 - sc3))
         DrawingUtil.drawLine(context, w * sc3, h / 2, w * sc1, h / 2)
         context.restore()
     } 
@@ -121,6 +120,7 @@ class State {
     startUpdating(cb : Function) {
         if (this.dir == 0) {
             this.dir = 1 - 2 * this.prevScale 
+            console.log("started", this.dir)
             cb()
         }
     }
@@ -224,7 +224,7 @@ class Renderer {
         this.leb.startUpdating(() => {
             this.animator.start(() => {
                 cb()
-                this.leb.startUpdating(() => {
+                this.leb.update(() => {
                     this.animator.stop()
                     cb()
                 })
